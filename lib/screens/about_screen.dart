@@ -11,9 +11,9 @@ class AboutScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            'Ứng dụng Quản lý học tập cá nhân\n'
+            'Ứng dụng Quản lý công việc cá nhân\n'
             'Sinh viên: Nguyễn Tấn Dũng\n'
-            'Lớp: Lập trình thiết bị di động\n'
+            'Lớp: Lập trình thiết bị di động- N05\n'
             'Trường: Đại học Phenikaa\n'
             'Năm học: 2025',
             textAlign: TextAlign.center,
