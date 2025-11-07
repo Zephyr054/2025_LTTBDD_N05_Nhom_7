@@ -69,19 +69,63 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  onPressed: () {
-                    widget.onAdd(
-                      Task(
+                  icon: const Icon(Icons.calendar_today),
+                  label: Text(
+                    'Hạn: ${_deadline.toString().split(' ')[0]}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _deadline,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      setState(() => _deadline = pickedDate);
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
+                //Nút thêm công việc mới
+                Center(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.save),
+                    label: const Text(
+                      'Thêm công việc',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_titleCtrl.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Vui lòng nhập tiêu đề'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final newTask = Task(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
                         title: _titleCtrl.text,
                         description: _descCtrl.text,
                         status: _status,
                         deadline: _deadline,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  },
-                  label: const Text('Lưu công việc'),
+                      );
+
+                      widget.onAdd(newTask); // Gửi task về trang chính
+                      Navigator.pop(context); // Quay lại trang trước
+                    },
+                  ),
                 ),
               ],
             ),
@@ -91,3 +135,4 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 }
+
