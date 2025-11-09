@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import 'package:get/get.dart';
 
 class AddTaskScreen extends StatefulWidget {
   final Function(Task) onAdd;
@@ -13,13 +14,13 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
-  String _status = 'Chưa làm';
+  String _status = 'notStarted'.tr;
   DateTime _deadline = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Thêm công việc')),
+      appBar: AppBar(title: Text('addTaskTitle'.tr)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
@@ -32,46 +33,60 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Thêm công việc mới',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  'addNewTask'.tr,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _titleCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Tiêu đề',
-                    prefixIcon: Icon(Icons.title),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'taskTitle'.tr,
+                    prefixIcon: const Icon(Icons.title),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _descCtrl,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Mô tả',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'taskDesc'.tr,
+                    prefixIcon: const Icon(Icons.description),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   value: _status,
-                  items: ['Chưa làm', 'Đang làm', 'Hoàn thành']
-                      .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                      .toList(),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'notStarted'.tr,
+                      child: Text('notStarted'.tr),
+                    ),
+                    DropdownMenuItem(
+                      value: 'inProgress'.tr,
+                      child: Text('inProgress'.tr),
+                    ),
+                    DropdownMenuItem(
+                      value: 'completed'.tr,
+                      child: Text('completed'.tr),
+                    ),
+                  ],
                   onChanged: (val) => setState(() => _status = val!),
-                  decoration: const InputDecoration(
-                    labelText: 'Trạng thái',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'status'.tr,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.calendar_today),
                   label: Text(
-                    'Hạn: ${_deadline.toString().split(' ')[0]}',
+                    '${'deadline'.tr}: ${_deadline.toString().split(' ')[0]}',
                     style: const TextStyle(fontSize: 16),
                   ),
                   onPressed: () async {
@@ -87,13 +102,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   },
                 ),
                 const SizedBox(height: 20),
-                //Nút thêm công việc mới
                 Center(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.save),
-                    label: const Text(
-                      'Thêm công việc',
-                      style: TextStyle(fontSize: 18),
+                    label: Text(
+                      'saveTask'.tr,
+                      style: const TextStyle(fontSize: 18),
                     ),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -107,9 +121,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     onPressed: () {
                       if (_titleCtrl.text.trim().isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Vui lòng nhập tiêu đề'),
-                          ),
+                          SnackBar(content: Text('enterTitleWarn'.tr)),
                         );
                         return;
                       }
@@ -122,8 +134,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         deadline: _deadline,
                       );
 
-                      widget.onAdd(newTask); // Gửi task về trang chính
-                      Navigator.pop(context); // Quay lại trang trước
+                      widget.onAdd(newTask);
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -135,4 +147,3 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 }
-
