@@ -1,102 +1,124 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
-import 'add_task_screen.dart';
-import 'edit_task_screen.dart';
+import 'package:get/get.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class EditTaskScreen extends StatefulWidget {
+  final Task task;
+  final Function(Task) onUpdate;
+
+  const EditTaskScreen({super.key, required this.task, required this.onUpdate});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<Task> tasks = [
-    Task(
-      id: '1',
-      title: 'Ôn thi cuối kì Bảo mật ứng dụng và hệ thống',
-      description: 'Chương 1 đến chương 9',
-      status: 'Hoàn thành',
-      deadline: DateTime(2025, 11, 4),
-    ),
-  ];
+class _EditTaskScreenState extends State<EditTaskScreen> {
+  late TextEditingController _titleCtrl;
+  late TextEditingController _descCtrl;
+  late String _status;
+  late DateTime _deadline;
 
-  void _addTask(Task newTask) {
-    setState(() {
-      tasks.add(newTask);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Đã thêm công việc mới!'),
-        duration: Duration(seconds: 2),
-      ),
+  @override
+  void initState() {
+    super.initState();
+    _titleCtrl = TextEditingController(text: widget.task.title);
+    _descCtrl = TextEditingController(text: widget.task.description);
+    _status = widget.task.status;
+    _deadline = widget.task.deadline;
+  }
+
+  void _saveChanges() {
+    final updatedTask = Task(
+      id: widget.task.id,
+      title: _titleCtrl.text,
+      description: _descCtrl.text,
+      status: _status,
+      deadline: _deadline,
     );
+
+    widget.onUpdate(updatedTask);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Study Planner')),
-      body: ListView.builder(
-        itemCount: tasks.length,
-        itemBuilder: (context, index) {
-          final t = tasks[index];
-          return Dismissible(
-            key: UniqueKey(),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Icon(Icons.delete, color: Colors.white),
+      appBar: AppBar(title: Text('editTaskTitle'.tr)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: ListView(
+          children: [
+            TextField(
+              controller: _titleCtrl,
+              decoration: InputDecoration(labelText: 'taskTitle'.tr),
             ),
-            onDismissed: (direction) {
-              setState(() {
-                tasks.removeAt(index);
-              });
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Đã xóa công việc')));
-            },
-            child: Card(
-              margin: const EdgeInsets.all(8),
-              child: ListTile(
-                title: Text(t.title),
-                subtitle: Text(
-                  '${t.description}\nTrạng thái: ${t.status}\nHạn: ${t.deadline.toString().split(' ')[0]}',
+            const SizedBox(height: 8),
+            TextField(
+              controller: _descCtrl,
+              decoration: InputDecoration(labelText: 'taskDesc'.tr),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: _status,
+              items: [
+                DropdownMenuItem(
+                  value: 'notStarted'.tr,
+                  child: Text('notStarted'.tr),
                 ),
-                isThreeLine: true,
-                onTap: () async {
-                  // Mở trang sửa khi nhấn vào
-                  final updatedTask = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditTaskScreen(
-                        task: t,
-                        onUpdate: (newTask) {
-                          setState(() {
-                            tasks[index] = newTask;
-                          });
-                        },
-                      ),
-                    ),
-                  );
-                },
+                DropdownMenuItem(
+                  value: 'inProgress'.tr,
+                  child: Text('inProgress'.tr),
+                ),
+                DropdownMenuItem(
+                  value: 'completed'.tr,
+                  child: Text('completed'.tr),
+                ),
+              ],
+              onChanged: (val) => setState(() => _status = val!),
+              decoration: InputDecoration(labelText: 'status'.tr),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.calendar_today, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${'deadline'.tr}: ${_deadline.toString().split(' ')[0]}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _deadline,
+                      firstDate: DateTime(2024),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      setState(() => _deadline = pickedDate);
+                    }
+                  },
+                  child: Text('editDeadline'.tr),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.save),
+                label: Text('saveChanges'.tr),
+                onPressed: _saveChanges,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddTaskScreen(onAdd: _addTask),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
+          ],
+        ),
       ),
     );
   }
