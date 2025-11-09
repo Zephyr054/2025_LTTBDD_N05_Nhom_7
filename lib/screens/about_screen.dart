@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -6,19 +7,93 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Giới thiệu')),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'Ứng dụng Quản lý công việc cá nhân\n'
-            'Sinh viên: Nguyễn Tấn Dũng\n'
-            'Lớp: Lập trình thiết bị di động- N05\n'
-            'Trường: Đại học Phenikaa\n'
-            'Năm học: 2025',
-            textAlign: TextAlign.center,
+      appBar: AppBar(
+        title: Text('aboutTitle'.tr), // Giới thiệu
+        centerTitle: true,
+        backgroundColor: Colors.indigo,
+      ),
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.indigoAccent, Colors.blueAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/avatar.png'),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'appDescription'.tr, // Ứng dụng Quản lý công việc cá nhân
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 30),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: const [
+                        InfoRow(
+                          label: 'studentLabel',
+                          value: 'Nguyễn Tấn Dũng',
+                        ),
+                        InfoRow(
+                          label: 'classLabel',
+                          value: 'Lập trình thiết bị di động - N05',
+                        ),
+                        InfoRow(
+                          label: 'schoolLabel',
+                          value: 'Đại học Phenikaa',
+                        ),
+                        InfoRow(label: 'yearLabel', value: '2025'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const InfoRow({super.key, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            '${label.tr}: ',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          Expanded(child: Text(value, style: const TextStyle(fontSize: 16))),
+        ],
       ),
     );
   }
