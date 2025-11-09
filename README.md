@@ -1,4 +1,4 @@
-# education_plan
+# task_manager
 
 A new Flutter project.
 
