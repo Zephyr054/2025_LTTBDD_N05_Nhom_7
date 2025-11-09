@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import 'package:get/get.dart';
 
 class EditTaskScreen extends StatefulWidget {
   final Task task;
@@ -42,40 +43,48 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Chỉnh sửa công việc')),
+      appBar: AppBar(title: Text('editTaskTitle'.tr)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             TextField(
               controller: _titleCtrl,
-              decoration: const InputDecoration(labelText: 'Tiêu đề'),
+              decoration: InputDecoration(labelText: 'taskTitle'.tr),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _descCtrl,
-              decoration: const InputDecoration(labelText: 'Mô tả'),
+              decoration: InputDecoration(labelText: 'taskDesc'.tr),
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: _status,
               items: [
-                'Chưa làm',
-                'Đang làm',
-                'Hoàn thành',
-              ].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+                DropdownMenuItem(
+                  value: 'notStarted'.tr,
+                  child: Text('notStarted'.tr),
+                ),
+                DropdownMenuItem(
+                  value: 'inProgress'.tr,
+                  child: Text('inProgress'.tr),
+                ),
+                DropdownMenuItem(
+                  value: 'completed'.tr,
+                  child: Text('completed'.tr),
+                ),
+              ],
               onChanged: (val) => setState(() => _status = val!),
-              decoration: const InputDecoration(labelText: 'Trạng thái'),
+              decoration: InputDecoration(labelText: 'status'.tr),
             ),
             const SizedBox(height: 8),
-            // 👉 Phần chỉnh hạn nằm trong form luôn
             Row(
               children: [
                 const Icon(Icons.calendar_today, color: Colors.blue),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Hạn: ${_deadline.toString().split(' ')[0]}',
+                    '${'deadline'.tr}: ${_deadline.toString().split(' ')[0]}',
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),
@@ -91,17 +100,16 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       setState(() => _deadline = pickedDate);
                     }
                   },
-                  child: const Text('Chỉnh sửa'),
+                  child: Text('editDeadline'.tr),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            // 👉 Nút lưu thay đổi
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.save),
-                label: const Text('Lưu thay đổi'),
+                label: Text('saveChanges'.tr),
                 onPressed: _saveChanges,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
