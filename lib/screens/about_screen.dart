@@ -6,17 +6,22 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final primary = colorScheme.primary;
+    final secondary = colorScheme.secondary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Text('aboutTitle'.tr), // Giới thiệu
         centerTitle: true,
-        backgroundColor: Colors.indigo,
       ),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.indigoAccent, Colors.blueAccent],
+            colors: isDark
+                ? [primary.withOpacity(0.4), Colors.black.withOpacity(0.9)]
+                : [primary.withOpacity(0.8), secondary.withOpacity(0.7)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
