@@ -53,7 +53,7 @@ class _StudyPlannerAppState extends State<StudyPlannerApp> {
           ? const Locale('vi', 'VN')
           : const Locale('en', 'US'),
       fallbackLocale: const Locale('en', 'US'),
-      title: 'Study Planner',
+      title: 'Task Manager',
       themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
